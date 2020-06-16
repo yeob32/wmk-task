@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div>
+    <h1>Task</h1>
+
+    <form id="form">
+        <label for="url">Url : </label>
+        <input type="text" name="url" id="url"/>
+        <br><br>
+        <label for="scope">Type : </label>
+        <select name="scope" id="scope">
+            <option value="exclude">HTML 태그제외</option>
+            <option value="all">Text 전체</option>
+        </select>
+        <br><br>
+        <label for="outputUnit">출력 묶음 단위(자연수) : </label>
+        <input type="text" name="outputUnit" id="outputUnit"/>
+    </form>
+
+    <button type="button" id="submit">출력</button>
+    <br>
+    <label>몫 :</label>
+    <div id="value"></div>
+
+    <label>나머지 :</label>
+    <div id="rest">
+    </div>
+</div>
+</body>
+</html>
+
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#submit').click(function (e) {
+            var url = encodeURI($('#url').val());
+            var scope = $('#scope').val();
+            var outputUnit = $('#outputUnit').val();
+
+            if(!url) {
+                alert('url 을 입력하세요.');
+                return;
+            }
+
+            if(!outputUnit) {
+                alert('출력 묶음 단위를 입력하세요.');
+                return;
+            }
+
+            if(outputUnit < 0) {
+                alert('자연수만 입력 가능합니다.');
+                return;
+            }
+
+            $.ajax({
+                url: 'http://localhost:8080/submit',
+                method: "POST",
+                data: {
+                    url: url,
+                    scope: scope,
+                    outputUnit: outputUnit
+                },
+                success: function (data) {
+                    $('#value').text(data.value);
+                    $('#rest').text(data.rest);
+                },
+                error: function (data) {
+                    alert('유효하지 않은 요청입니다.');
+                }
+            });
+            return false;
+        });
+    });
+</script>
