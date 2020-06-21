@@ -21,17 +21,27 @@ public class Extractor {
             return this.formal.check(index);
         }
 
+        public static boolean checkAll(Character index) {
+            return asciis.stream().anyMatch(ascii -> ascii.check(index));
+        }
+
         interface Formal {
             boolean check(Character index);
         }
+
+        private static final List<ASCII> asciis = Arrays.asList(ASCII.values());
     }
 
     public static String extractIntegerOrAlpha(String value) {
-        return crossLinking(getSortedMap(value));
+        return crossLinking(sortList(value));
     }
 
-    public static String crossLinking(Map<Boolean, List<Character>> sortedMap) {
+    public static String crossLinking(List<Character> sortedList) {
         StringBuilder stringBuilder = new StringBuilder();
+
+        Function<Character, Boolean> grouping = ASCII.number::check;
+        Map<Boolean, List<Character>> sortedMap = sortedList.stream()
+                .collect(Collectors.groupingBy(grouping));
 
         List<Character> intChars = sortedMap.get(true);
         List<Character> alphaChars = sortedMap.get(false);
@@ -55,7 +65,7 @@ public class Extractor {
         }
 
         List<Character> temps;
-        if(aboveAlpha) {
+        if (aboveAlpha) {
             temps = alphaChars;
         } else {
             temps = intChars;
@@ -68,13 +78,22 @@ public class Extractor {
         return stringBuilder.toString();
     }
 
-    public static Map<Boolean, List<Character>> getSortedMap(String value) {
-        Function<Character, Boolean> grouping = ASCII.number::check;
+    public static List<Character> sortList(String value) {
         return value.chars()
                 .mapToObj(ch -> (char) ch)
-                .filter((ch) -> ASCII.number.check(ch) || ASCII.upper.check(ch) || ASCII.lower.check(ch))
+                .filter(ASCII::checkAll)
                 .sorted(Comparator.comparingInt(Extractor::trans))
-                .collect(Collectors.groupingBy(grouping));
+                .collect(Collectors.toList());
+    }
+
+    public static int trans(Character ch) {
+        if (ASCII.lower.check(ch)) {
+            return ((ch - 97) * 2) * 2;
+        } else if (ASCII.upper.check(ch)) {
+            return ((ch - 65) * 2 - 1) * 2;
+        } else {
+            return ch * 10;
+        }
     }
 
     private static int maxSize(List<Character> intChars, List<Character> alphaChars) {
@@ -83,15 +102,5 @@ public class Extractor {
 
     private static int minSize(List<Character> intChars, List<Character> alphaChars) {
         return Math.min(intChars.size(), alphaChars.size());
-    }
-
-    public static int trans(Character ch) {
-        if (ASCII.lower.check(ch)) {
-            return ((ch - 97) * 2) * 2;
-        } else if (ch >= 65 && ch <= 90) {
-            return ((ch - 65) * 2 - 1) * 2;
-        } else {
-            return ch;
-        }
     }
 }

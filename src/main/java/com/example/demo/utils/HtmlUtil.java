@@ -11,14 +11,6 @@ import java.nio.charset.StandardCharsets;
 
 public class HtmlUtil {
 
-    public static String getHtml(String requestUrl, Scope scope) {
-        if(scope.equals(Scope.ALL)) {
-            return loadHtml(requestUrl);
-        }
-
-        return removeTag(loadHtml(requestUrl));
-    }
-
     public static String loadHtml(String requestUrl) {
         StringBuilder result = new StringBuilder();
 
@@ -48,6 +40,14 @@ public class HtmlUtil {
         }
 
         return result.toString();
+    }
+
+    public static String getHtml(String requestUrl, Scope scope) {
+        if (scope.equals(Scope.ALL)) {
+            return loadHtml(requestUrl);
+        }
+
+        return removeTag(loadHtml(requestUrl));
     }
 
     public static String removeTag(String html) {

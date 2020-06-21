@@ -1,32 +1,33 @@
 package com.example.demo;
 
-import com.example.demo.application.TaskService;
-import com.example.demo.domain.Task;
-import com.example.demo.domain.TaskDto;
 import com.example.demo.utils.Extractor;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.stream.Collectors;
 
 @SpringBootTest
 public class ExtractTest {
 
-    TaskDto.Request task;
-
-    @BeforeEach
-    public void setUp() {
-        task = TaskDto.Request.builder()
-                .url("https://www.naver.com")
-                .outputUnit(100)
-                .build();
+    @ParameterizedTest
+    @ValueSource(strings = "$!aa3a2Ab0YZ4z#@y")
+    @DisplayName("정렬 테스트")
+    public void print2(String value) {
+        String result = Extractor.sortList(value)
+                .stream()
+                .map(Object::toString)
+                .collect(Collectors.joining());
+        Assertions.assertEquals(result, "AaaabYyZz0234");
     }
 
-    @Test
+    @ParameterizedTest
+    @ValueSource(strings = "$#@!aZaz1a44Ab0")
     @DisplayName("정렬 테스트")
-    public void print() {
-        String result = Extractor.crossLinking(Extractor.getSortedMap("$#@!aaaAb0"));
-        Assertions.assertEquals(result, "A0aaab");
+    public void print(String value) {
+        String result = Extractor.crossLinking(Extractor.sortList(value));
+        Assertions.assertEquals(result, "A0a1a4a4bZz");
     }
 }
