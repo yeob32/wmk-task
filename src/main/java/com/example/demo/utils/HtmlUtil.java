@@ -1,42 +1,38 @@
 package com.example.demo.utils;
 
 import com.example.demo.domain.enums.Scope;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
+@Slf4j
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class HtmlUtil {
 
     public static String loadHtml(String requestUrl) {
         StringBuilder result = new StringBuilder();
 
-        BufferedReader bufferedReader = null;
         try {
             URL url = new URL(requestUrl);
             HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-            bufferedReader = new BufferedReader(
-                    new InputStreamReader(httpURLConnection.getInputStream(), StandardCharsets.UTF_8));
 
-            String inputLine;
-            while ((inputLine = bufferedReader.readLine()) != null) {
-                result.append(inputLine);
-            }
-
-            bufferedReader.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (bufferedReader != null) {
-                try {
-                    bufferedReader.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
+            try (InputStreamReader inputStreamReader = new InputStreamReader(httpURLConnection.getInputStream(), StandardCharsets.UTF_8);
+                 BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+            ) {
+                String inputLine;
+                while ((inputLine = bufferedReader.readLine()) != null) {
+                    result.append(inputLine);
                 }
             }
+        } catch (Exception e) {
+            log.error("loadHtml Error", e);
+            e.printStackTrace();
         }
 
         return result.toString();
