@@ -15,6 +15,8 @@ import java.nio.charset.StandardCharsets;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class HtmlUtil {
 
+    private static final String REMOVE_TAG = "<[^>]*>";
+
     public static String loadHtml(String requestUrl) {
         StringBuilder result = new StringBuilder();
 
@@ -47,6 +49,6 @@ public class HtmlUtil {
     }
 
     public static String removeTag(String html) {
-        return html.replaceAll("<[^>]*>", "").replaceAll(" ", "");
+        return html.replaceAll(REMOVE_TAG, "").replaceAll(" ", "");
     }
 }
