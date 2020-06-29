@@ -1,6 +1,5 @@
 package com.example.demo.domain.enums;
 
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Arrays;

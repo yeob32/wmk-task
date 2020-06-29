@@ -10,12 +10,14 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.regex.Pattern;
 
 @Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class HtmlUtil {
 
     private static final String REMOVE_TAG = "<[^>]*>";
+//    private static final Pattern pattern = Pattern.compile("<[^>]*>"); // 패턴 클래스를 이용해 미리 컴파일 해둘 수 있다.
 
     public static String loadHtml(String requestUrl) {
         StringBuilder result = new StringBuilder();
