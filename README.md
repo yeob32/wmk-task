@@ -17,7 +17,7 @@
 - 응답
  - `value` : 추출 문자열
  - `rest` : 나머지 문자열   
-**sample**
+### sample
 ```
 {
   "value":"A0A0A0A0A0A0A0A0A0A0A0A0A0A0A0A0A0A0A0A0A0A0A0",
